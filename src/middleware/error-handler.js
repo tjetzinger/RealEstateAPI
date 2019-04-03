@@ -1,3 +1,4 @@
+const config = require('config');
 const { APIError, InternalServerError } = require('rest-api-errors');
 const { STATUS_CODES } = require('http');
 //const logger = require('../../logger');
@@ -16,18 +17,20 @@ const errorHandler = (err, req, res, next) => {
   }
 
 
-  if (err.name === 'ValidationError') {
-    return res.status(405).json(err);
-  }
+  // if (err.name === 'ValidationError') {
+  //   return res.status(405).json(err);
+  // }
 
   //logger.info('API error', { error: err });
 
-  return res
-    .status(error.status || 500)
-    .json({
-      code: error.code || 500,
-      message: error.message || STATUS_CODES[error.status],
-    });
+  // return res
+  //   .status(error.status || 500)
+  //   .json({
+  //     code: error.code || 500,
+  //     message: error.message || STATUS_CODES[error.status],
+  //   });
+
+  res.json(config.messages.errorValuation);
 };
 
 module.exports = { errorHandler };

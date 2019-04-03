@@ -16,10 +16,10 @@ const schema = new Schema({
     required: [true],
   },
   latitude: {
-    type: String,
+    type: Number,
   },
   longitude: {
-    type: String,
+    type: Number,
   },
   realEstateTypeId: {
     type: Number,

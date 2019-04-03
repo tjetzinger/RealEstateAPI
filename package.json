@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "axios": "0.18.0",
+    "config": "3.0.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.16.0",
@@ -19,6 +20,7 @@
     "mongoose": "5.4.20",
     "mongose": "0.0.2-security",
     "morgan": "1.9.1",
+    "oauth-1.0a": "2.2.5",
     "rest-api-errors": "^1.2.1"
   }
 }

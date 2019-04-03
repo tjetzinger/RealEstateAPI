@@ -1,0 +1,48 @@
+{
+  "mongodb": {
+    "uri": "mongodb://localhost:27017/real_estate_api"
+  },
+  "api": {
+    "basicAuth": {
+      "username": "admin",
+      "password": "*****"
+    }
+  },
+  "im24": {
+    "oauth": {
+      "consumer": {
+        "key": "Immobilienscout24 API Key",
+        "secret": "*****"
+      }
+    },
+    "calls": {
+      "valuationBasic": {
+        "url": "https://rest.immobilienscout24.de/restapi/api/ibw/v2.0.1/valuation/nouser/nopdf/basic/",
+        "method": "POST"
+      }
+    }
+  },
+  "gmaps": {
+    "auth": {
+      "key": "******************************"
+    },
+    "calls": {
+      "geoLocation": {
+        "url": "https://maps.googleapis.com/maps/api/geocode/json"
+      }
+    }
+  },
+  "messages": {
+    "errorValuation": {
+      "version": "v2",
+      "content": {
+        "messages": [
+          {
+            "type": "text",
+            "text": "Bewertung z.Z. nicht möglich. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal."
+          }
+        ]
+      }
+    }
+  }
+}
