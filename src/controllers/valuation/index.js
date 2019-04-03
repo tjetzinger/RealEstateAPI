@@ -25,11 +25,11 @@ const { create } = require('./create');
 module.exports = (models) => {
   const api = router();
 
-  //api.get('/', list(models, { config }));
-  //api.get('/:_id', get(models, { config }));
+  //api.get('/', list(models));
+  //api.get('/:_id', get(models));
   api.post('/', create(models));
-  //api.patch('/:_id', update(models, { config }));
-  //api.delete('/:_id', remove(models, { config }));
+  //api.patch('/:_id', update(models));
+  //api.delete('/:_id', remove(models));
 
   return api;
 };

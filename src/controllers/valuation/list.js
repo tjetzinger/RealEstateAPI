@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const list = ({ Valuation }, { config }) => async (req, res, next) => {
+const list = ({ Property }) => async (req, res, next) => {
   let { limit, skip, search } = req.query;
   skip = skip ? parseInt(skip, 10) : 0;
   limit = limit ? parseInt(limit, 10) : 100;
@@ -10,12 +10,12 @@ const list = ({ Valuation }, { config }) => async (req, res, next) => {
     if (search) {
       _.extend(query, { title: new RegExp(`${search}`, 'i') })
     }
-    const valuation = await Valuation.find(query)
+    const property = await Property.find(query)
       .skip(skip)
       .limit(limit)
       .sort({ _id: -1 });
 
-    res.status(200).send({ valuations: valuation });
+    res.status(200).send({ properties: property });
   } catch (error) {
     next(error);
   }

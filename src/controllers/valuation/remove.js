@@ -1,11 +1,11 @@
 const _ = require('lodash');
 
-const remove = ({ Valuation }, { config }) => async (req, res, next) => {
+const remove = ({ Property }) => async (req, res, next) => {
   const { _id } = req.params;
   try {
-    const valuation = await Valuation.findOne({ _id });
-    await Valuation.remove({ _id });
-    res.status(200).send({ valuation: valuation });
+    const property = await Property.findOne({ _id });
+    await Property.remove({ _id });
+    res.status(200).send({ property: property });
   } catch (error) {
     next(error);
   }

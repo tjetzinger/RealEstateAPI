@@ -1,6 +1,6 @@
 {
   "mongodb": {
-    "uri": "mongodb://localhost:27017/real_estate_api"
+    "uri": "mongodb://localhost:27017/RealEstateAPI"
   },
   "api": {
     "basicAuth": {

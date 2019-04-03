@@ -4,13 +4,13 @@ const config = require('config');
 
 const { errorHandler } = require('../middleware');
 // list of models here
-const { Valuation } = require('../models/valuation');
+const { Property } = require('../models/property');
 
 // list of controllers here
-const valuation = require('../controllers/valuation');
+const property = require('../controllers/valuation');
 
 // combine models ino one object
-const models = { Valuation };
+const models = { Property };
 
 const routersInit = () => {
   const router = express();
@@ -21,7 +21,7 @@ const routersInit = () => {
   }));
 
   // register api points
-  router.use('/valuation/basic', valuation(models));
+  router.use('/valuation/basic', property(models));
 
   // catch api all errors
   router.use(errorHandler);
