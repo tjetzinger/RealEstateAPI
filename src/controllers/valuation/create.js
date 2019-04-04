@@ -1,35 +1,31 @@
-const { NotAcceptable } = require('rest-api-errors');
+const { InternalServerError } = require('rest-api-errors');
 const { sendOne } = require('../../middleware');
-const { im24, maps } = require('../../utils');
-const _ = require('lodash');
 
-const create = ({ Property }) => async (req, res, next) => {
+const create = ({ Page, PageUser, Property, User, UserProperty }) => async (req, res, next) => {
+    let error;
+    const callbackHandler = ( err ) => {
+        if(err) error = new InternalServerError(err.code, err.message);
+    };
+
     try {
-        const property = new Property();
-        _.extend(property, req.body);
+        const page = await Page.findByIdAndUpdate(req.body.page._id, req.body.page, { new: true, upsert: true }, callbackHandler);
+        if(error) throw error;
 
-        const geoResponse = await maps.getGeoLocation(property.address);
+        const user = await User.findByIdAndUpdate(req.body.user._id, req.body.user, {new: true, upsert: true }, callbackHandler);
+        if(error) throw error;
 
-        if (geoResponse.data.results.length != 1) {
-            throw new NotAcceptable('Geo Location unequal 1', geoResponse);
-        }
-        property.latitude = geoResponse.data.results[0].geometry.location.lat;
-        property.longitude = geoResponse.data.results[0].geometry.location.lng;
+        await PageUser.findOneAndUpdate({ pageId: page._id, userId: user._id }, {}, { upsert: true}, callbackHandler);
+        if(error) throw error;
+
+        let property = new Property(req.body.property);
+        property = await Property.findByIdAndUpdate(property.id, req.body.property, { upsert: true }, callbackHandler);
         await property.save();
+        if(error) throw error;
 
-        const property_json = {
-            "latitude": property.latitude,
-            "longitude": property.longitude,
-            "address": property.address,
-            "realEstateTypeId": property.realEstateTypeId,
-            "constructionYear": property.constructionYear,
-            "roomCountId": property.roomCountId,
-            "livingArea": property.livingArea,
-            "siteArea": property.siteArea
-        };
-        const im24Response = await im24.getValuationBasic(property_json);
-        return sendOne(res, im24Response.data);
+        await UserProperty.findOneAndUpdate({ userId: user._id, propertyId: property._id }, {}, { upsert: true }, callbackHandler);
+        if(error) throw error;
 
+        return sendOne(res, property.valuation);
     } catch (error) {
         next(error);
     }

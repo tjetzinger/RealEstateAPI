@@ -3,7 +3,12 @@ const config = require('config');
 
 class MongoManager {
     connect() {
-        return mongoose.connect(config.mongodb.uri, {useNewUrlParser: true});
+        const options = {
+            useNewUrlParser: true,
+            useFindAndModify: false,
+            useCreateIndex: true
+        };
+        return mongoose.connect(config.mongodb.uri, options);
     }
 }
 

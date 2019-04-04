@@ -4,13 +4,17 @@ const config = require('config');
 
 const { errorHandler } = require('../middleware');
 // list of models here
+const { Page } = require('../models/page');
+const { PageUser } = require('../models/page_user');
 const { Property } = require('../models/property');
+const { User } = require('../models/user');
+const { UserProperty } = require('../models/user_property');
 
 // list of controllers here
 const property = require('../controllers/valuation');
 
 // combine models into one object
-const models = { Property };
+const models = { Page, PageUser, Property, User, UserProperty };
 
 const routersInit = () => {
     const router = express();
