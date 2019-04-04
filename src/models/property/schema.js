@@ -42,4 +42,10 @@ const schema = new Schema({
   }
 });
 
+schema.set('timestamps', true);
+
+schema.virtual('address').get(function () {
+  return this.street + ", " + this.zip + ", " + this.city;
+});
+
 module.exports = { schema };

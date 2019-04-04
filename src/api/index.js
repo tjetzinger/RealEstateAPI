@@ -9,7 +9,7 @@ const { Property } = require('../models/property');
 // list of controllers here
 const property = require('../controllers/valuation');
 
-// combine models ino one object
+// combine models into one object
 const models = { Property };
 
 const routersInit = () => {

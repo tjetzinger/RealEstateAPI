@@ -8,8 +8,7 @@ const create = ({ Property }) => async (req, res, next) => {
     const property = new Property();
     _.extend(property, req.body);
 
-    const address = property.street + ", " + property.zip + ", " + property.city;
-    const geoResponse = await maps.getGeoLocation( address );
+    const geoResponse = await maps.getGeoLocation( property.address );
 
     if (geoResponse.data.results.length != 1) {
       throw new NotAcceptable('Geo Location unequal 1', geoResponse);
@@ -21,7 +20,7 @@ const create = ({ Property }) => async (req, res, next) => {
     const property_json = {
       "latitude": property.latitude,
       "longitude": property.longitude,
-      "address": address,
+      "address": property.address,
       "realEstateTypeId": property.realEstateTypeId,
       "constructionYear": property.constructionYear,
       "roomCountId": property.roomCountId,
