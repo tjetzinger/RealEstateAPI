@@ -12,24 +12,24 @@ const { create } = require('./create');
  *
  *
  * GET /api/v1/valuation/basic - List
-     @header
-            Authorization: Bearer {token}
-     @optionalQueryParameters
-           search {String} - value to search
-           limit {Number} - count of item to send
-           skip {Number} - value to search
+ @header
+ Authorization: Bearer {token}
+ @optionalQueryParameters
+ search {String} - value to search
+ limit {Number} - count of item to send
+ skip {Number} - value to search
  *
  *
  * **/
 
 module.exports = (models) => {
-  const api = router();
+    const api = router();
 
-  //api.get('/', list(models));
-  //api.get('/:_id', get(models));
-  api.post('/', create(models));
-  //api.patch('/:_id', update(models));
-  //api.delete('/:_id', remove(models));
+    //api.get('/', list(models));
+    //api.get('/:_id', get(models));
+    api.post('/', create(models));
+    //api.patch('/:_id', update(models));
+    //api.delete('/:_id', remove(models));
 
-  return api;
+    return api;
 };
