@@ -5,6 +5,15 @@
     "mongodb": {
         "uri": "mongodb://localhost:27017/RealEstateAPI"
     },
+    "locale": {
+        "language": "de-DE",
+        "currency": {
+            "style": "currency",
+            "currency": "EUR",
+            "minimumFractionDigits": 0,
+            "maximumFractionDigits": 0
+        }
+    },
     "api": {
         "basicAuth": {
             "username": "admin",
@@ -32,10 +41,43 @@
         "calls": {
             "geoLocation": {
                 "url": "https://maps.googleapis.com/maps/api/geocode/json"
+            },
+            "staticImage": {
+                "url": "https://maps.googleapis.com/maps/api/staticmap",
+                "requestsTypes": [
+                    {
+                        "zoom": 17,
+                        "maptype": "roadmap",
+                        "size": "560x300"
+                    },
+                    {
+                        "zoom": 20,
+                        "maptype": "satellite",
+                        "size": "560x300"
+                    }
+                ]
             }
         }
     },
     "messages": {
+        "propertyValuation": {
+            "version": "v2",
+            "content": {
+                "messages": [
+                    {
+                        "type": "cards",
+                        "elements": [
+                            {
+                                "title": "",
+                                "subtitle": "",
+                                "image_url": ""
+                            }
+                        ],
+                        "image_aspect_ratio": "horizontal"
+                    }
+                ]
+            }
+        },
         "errorValuation": {
             "version": "v2",
             "content": {

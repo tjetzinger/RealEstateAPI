@@ -1,5 +1,7 @@
 const { NotAcceptable, InternalServerError } = require('rest-api-errors');
 const mongoose = require('mongoose');
+const config = require('config');
+const _ = require('lodash');
 const Schema = mongoose.Schema;
 const locationSchema = require('../location/schema');
 const valuationSchema = require('../valuation/schema');
@@ -7,6 +9,10 @@ const { Location } = require('../location');
 const { Valuation } = require('../valuation');
 const { im24, maps, hash } = require('../../utils');
 const ObjectId = Schema.Types.ObjectId;
+
+Number.prototype.toCurrency = function(){
+    return this.toLocaleString(config.locale.language, config.locale.currency).replace(',', '.');
+};
 
 const options = {
     timestamps: true,
@@ -37,6 +43,9 @@ const schema = new Schema({
         type: String,
         required: true,
         trim: true
+    },
+    formatted_address: {
+        type: String,
     },
     realEstateTypeId: {
         type: Number,
@@ -81,6 +90,7 @@ schema.methods.fetchLocation = async function(next) {
         const geoResponse = await maps.getGeoLocation(this.address);
         if (geoResponse.data.results.length !== 1)
             throw new NotAcceptable('Geo Location unequal 1', geoResponse);
+        this.formatted_address = geoResponse.data.results[0].formatted_address;
         this.location = new Location(geoResponse.data.results[0].geometry.location);
     }
 };
@@ -102,12 +112,63 @@ schema.methods.fetchValuation = async function(next) {
     }
 };
 
+schema.methods.getImage = function (imageType) {
+    return encodeURI(config.gmaps.calls.staticImage.url + '?center=' + this.address + '&zoom=' + config.gmaps.calls.staticImage.requestsTypes[imageType].zoom + '&maptype=' + config.gmaps.calls.staticImage.requestsTypes[imageType].maptype + '&size=' + config.gmaps.calls.staticImage.requestsTypes[imageType].size + '&markers=' + this.location.latitude + ',' + this.location.longitude + '&key=' + config.gmaps.auth.key);
+};
+
+schema.virtual('id').get(function () {
+    return hash.md5(this.address);
+});
+
 schema.virtual('address').get(function () {
     return this.street + ", " + this.zip + ", " + this.city + ", " + this.country;
 });
 
-schema.virtual('id').get(function () {
-    return hash.md5(this.address);
+schema.virtual('resultAbsolute').get(function () {
+    return this.valuation.resultAbsolute.toCurrency();
+});
+
+schema.virtual('lowAbsolute').get(function () {
+    return this.valuation.lowAbsolute.toCurrency();
+});
+
+schema.virtual('highAbsolute').get(function () {
+    return this.valuation.highAbsolute.toCurrency();
+});
+
+schema.virtual('resultPerSqm').get(function () {
+    return this.valuation.resultPerSqm.toCurrency();
+});
+
+schema.virtual('lowPerSqm').get(function () {
+    return this.valuation.lowPerSqm.toCurrency();
+});
+
+schema.virtual('highPerSqm').get(function () {
+    return this.valuation.highPerSqm.toCurrency();
+});
+
+schema.virtual('quickCheckLow').get(function () {
+    return this.valuation.quickCheckLow.toCurrency();
+});
+
+schema.virtual('quickCheckHigh').get(function () {
+    return this.valuation.quickCheckHigh.toCurrency();
+});
+
+schema.virtual('responseLocation').get(function () {
+    let response = _.cloneDeep(config.messages.propertyValuation);
+    response.content.messages[0].elements[0].title = this.formatted_address;
+    response.content.messages[0].elements[0].image_url = this.getImage(0);
+    return response;
+});
+
+schema.virtual('responseValuation').get(function () {
+    let response = _.cloneDeep(config.messages.propertyValuation);
+    response.content.messages[0].elements[0].title = "Durchschnittlicher Gesamtwert für diese Immobilie: " + this.resultAbsolute;
+    response.content.messages[0].elements[0].subtitle = "Wertspanne pro qm: " + this.lowPerSqm + " - " + this.highPerSqm;
+    response.content.messages[0].elements[0].image_url = this.getImage(1);
+    return response;
 });
 
 schema.virtual('users', {

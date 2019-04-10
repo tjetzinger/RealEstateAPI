@@ -25,7 +25,7 @@ const create = ({ Page, PageUser, Property, User, UserProperty }) => async (req,
         await UserProperty.findOneAndUpdate({ userId: user._id, propertyId: property._id }, {}, { upsert: true }, callbackHandler);
         if(error) throw error;
 
-        return sendOne(res, property.responseValuation);
+        return sendOne(res, property.responseLocation);
     } catch (error) {
         next(error);
     }
