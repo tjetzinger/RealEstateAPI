@@ -112,10 +112,6 @@ schema.methods.fetchValuation = async function(next) {
     }
 };
 
-schema.methods.getImage = function (imageType) {
-    return encodeURI(config.gmaps.calls.staticImage.url + '?center=' + this.address + '&zoom=' + config.gmaps.calls.staticImage.requestsTypes[imageType].zoom + '&maptype=' + config.gmaps.calls.staticImage.requestsTypes[imageType].maptype + '&size=' + config.gmaps.calls.staticImage.requestsTypes[imageType].size + '&markers=' + this.location.latitude + ',' + this.location.longitude + '&key=' + config.gmaps.auth.key);
-};
-
 schema.virtual('id').get(function () {
     return hash.md5(this.address);
 });
@@ -156,10 +152,18 @@ schema.virtual('quickCheckHigh').get(function () {
     return this.valuation.quickCheckHigh.toCurrency();
 });
 
+schema.virtual('locationImage').get(function () {
+    return encodeURI(config.gmaps.calls.staticImage.url + '?center=' + this.address + '&zoom=' + config.gmaps.calls.staticImage.requestsTypes[0].zoom + '&maptype=' + config.gmaps.calls.staticImage.requestsTypes[0].maptype + '&size=' + config.gmaps.calls.staticImage.requestsTypes[0].size + '&markers=' + this.location.latitude + ',' + this.location.longitude + '&key=' + config.gmaps.auth.key);
+});
+
+schema.virtual('propertyImage').get(function () {
+    return encodeURI(config.gmaps.calls.staticImage.url + '?center=' + this.address + '&zoom=' + config.gmaps.calls.staticImage.requestsTypes[1].zoom + '&maptype=' + config.gmaps.calls.staticImage.requestsTypes[1].maptype + '&size=' + config.gmaps.calls.staticImage.requestsTypes[1].size + '&key=' + config.gmaps.auth.key);
+});
+
 schema.virtual('responseLocation').get(function () {
     let response = _.cloneDeep(config.messages.propertyValuation);
     response.content.messages[0].elements[0].title = this.formatted_address;
-    response.content.messages[0].elements[0].image_url = this.getImage(0);
+    response.content.messages[0].elements[0].image_url = this.locationImage;
     return response;
 });
 
@@ -167,7 +171,7 @@ schema.virtual('responseValuation').get(function () {
     let response = _.cloneDeep(config.messages.propertyValuation);
     response.content.messages[0].elements[0].title = "Durchschnittlicher Gesamtwert für diese Immobilie: " + this.resultAbsolute;
     response.content.messages[0].elements[0].subtitle = "Wertspanne pro qm: " + this.lowPerSqm + " - " + this.highPerSqm;
-    response.content.messages[0].elements[0].image_url = this.getImage(1);
+    response.content.messages[0].elements[0].image_url = this.propertyImage;
     return response;
 });
 
