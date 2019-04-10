@@ -77,17 +77,6 @@
                     }
                 ]
             }
-        },
-        "errorValuation": {
-            "version": "v2",
-            "content": {
-                "messages": [
-                    {
-                        "type": "text",
-                        "text": "Bewertung z.Z. nicht möglich. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal."
-                    }
-                ]
-            }
         }
     }
 }
