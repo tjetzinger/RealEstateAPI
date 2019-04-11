@@ -60,6 +60,40 @@
         }
     },
     "messages": {
+        "propertyLocation": {
+            "version": "v2",
+            "content": {
+                "messages": [
+                    {
+                        "type": "text",
+                        "text": "👍 Ich glaube, ich habe die Adresse gefunden. Ist es diese Adresse?"
+                    },
+                    {
+                        "type": "cards",
+                        "elements": [
+                            {
+                                "title": "",
+                                "subtitle": "",
+                                "image_url": "",
+                                "buttons": [
+                                    {
+                                        "type": "node",
+                                        "caption": "👍 Ja, das ist sie",
+                                        "target": "Assess Property"
+                                    },
+                                    {
+                                        "type": "node",
+                                        "caption": "♻️ Nochmal versuchen",
+                                        "target": "Address"
+                                    }
+                                ]
+                            }
+                        ],
+                        "image_aspect_ratio": "horizontal"
+                    }
+                ]
+            }
+        },
         "propertyValuation": {
             "version": "v2",
             "content": {

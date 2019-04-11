@@ -167,9 +167,9 @@ schema.virtual('propertyImage').get(function () {
 });
 
 schema.virtual('responseLocation').get(function () {
-    let response = _.cloneDeep(config.messages.propertyValuation);
-    response.content.messages[0].elements[0].title = this.formatted_address;
-    response.content.messages[0].elements[0].image_url = this.locationImage;
+    let response = _.cloneDeep(config.messages.propertyLocation);
+    response.content.messages[1].elements[0].title = this.formatted_address;
+    response.content.messages[1].elements[0].image_url = this.locationImage;
     return response;
 });
 
