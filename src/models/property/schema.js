@@ -61,10 +61,16 @@ const schema = new Schema({
     },
     livingArea: {
         type: Number,
-        required: true
+        required: true,
+        set: function (v) {
+            return (v > 15) ? v : 15;
+        }
     },
     siteArea: {
         type: Number,
+        set: function (v) {
+            return (v > 50) ? v : 50;
+        }
     },
     location: { type: locationSchema, required: true, default: {} },
     valuation: { type: valuationSchema, required: true, default: {} }
