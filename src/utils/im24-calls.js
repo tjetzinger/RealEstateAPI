@@ -24,6 +24,19 @@ const getValuationBasic = ( property ) => {
     return axios.post(valuationBasicCall.url, property, options);
 };
 
+const getExpose = ( exposeId ) => {
+    let exposeCall = _.cloneDeep(config.im24.calls.expose);
+    exposeCall.url += exposeId;
+    const options = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+    _.assign(options.headers, oauth.toHeader(oauth.authorize(exposeCall)));
+    return axios.get(exposeCall.url, options);
+};
+
 module.exports = {
-    getValuationBasic: getValuationBasic
+    getValuationBasic,
+    getExpose
 };

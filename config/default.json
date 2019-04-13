@@ -31,6 +31,10 @@
             "valuationBasic": {
                 "url": "https://rest.immobilienscout24.de/restapi/api/ibw/v2.0.1/valuation/nouser/nopdf/basic/",
                 "method": "POST"
+            },
+            "expose": {
+                "url": "https://rest.immobilienscout24.de/restapi/api/search/v1.0/expose/",
+                "method": "GET"
             }
         }
     },

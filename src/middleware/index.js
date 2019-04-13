@@ -1,5 +1,5 @@
 const { errorHandler } = require('./error-handler');
 const { sendOne } = require('./requests-helpers');
-const { storeProperty } = require('./storeData');
+const { storeProperty, storeExpose } = require('./storeData');
 
-module.exports = { errorHandler, sendOne, storeProperty };
+module.exports = { errorHandler, sendOne, storeProperty, storeExpose };

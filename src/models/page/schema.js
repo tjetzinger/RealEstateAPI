@@ -13,12 +13,18 @@ const schema = new Schema({
     },
     name: {
         type: String,
-        required: true
+        required: false
     }
 }, options);
 
 schema.virtual('users', {
     ref: 'PageUser',
+    localField: '_id',
+    foreignField: 'pageId'
+});
+
+schema.virtual('exposes', {
+    ref: 'PageExpose',
     localField: '_id',
     foreignField: 'pageId'
 });
