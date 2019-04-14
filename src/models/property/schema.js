@@ -8,15 +8,13 @@ const valuationSchema = require('../valuation/schema');
 const { Location } = require('../location');
 const { Valuation } = require('../valuation');
 const { im24, maps, hash } = require('../../utils');
-const ObjectId = Schema.Types.ObjectId;
 
 Number.prototype.toCurrency = function(){
     return this.toLocaleString(config.locale.language, config.locale.currency).replace(',', '.');
 };
 
 const options = {
-    timestamps: true,
-    toJSON: { virtuals: true }
+    timestamps: true
 };
 
 const schema = new Schema({
@@ -73,54 +71,57 @@ const schema = new Schema({
         }
     },
     location: { type: locationSchema, required: true, default: {} },
-    valuation: { type: valuationSchema, required: true, default: {} }
+    valuation: { type: valuationSchema, required: true, default: {} },
+    users: [{
+        type: Number,
+        ref: 'User'
+    }]
 }, options);
 
 schema.pre('validate', function (next) {
-    this._id = this.id;
+    if (! this._id) this._id = this.generateId(this);
     next();
 });
 
 schema.pre('save', async function(next) {
     try {
-        await this.fetchLocation(next);
-        await this.fetchValuation(next);
+        await this.fetchLocation();
+        await this.fetchValuation();
         next();
     } catch (err) {
         next(err);
     }
 });
 
-schema.methods.fetchLocation = async function(next) {
+schema.methods.fetchLocation = async function() {
     if(typeof this.location == 'undefined' || typeof this.location._id == 'undefined') {
         const geoResponse = await maps.getGeoLocation(this.address);
         if (geoResponse.data.results.length !== 1)
-            throw new NotAcceptable('Geo Location unequal 1', geoResponse);
+            throw new NotAcceptable(geoResponse.data.status, this.toJSON());
         this.formatted_address = geoResponse.data.results[0].formatted_address;
         this.location = new Location(geoResponse.data.results[0].geometry.location);
     }
 };
 
-schema.methods.fetchValuation = async function(next) {
+schema.methods.fetchValuation = async function() {
     if(typeof this.valuation == 'undefined' || typeof this.valuation._id == 'undefined') {
-        const im24Property = {
-            "latitude": this.location.latitude,
-            "longitude": this.location.longitude,
-            "address": this.address,
-            "realEstateTypeId": this.realEstateTypeId,
-            "constructionYearRangeId": this.constructionYearRangeId,
-            "roomCountId": this.roomCountId,
-            "livingArea": this.livingArea,
-            "siteArea": this.siteArea
-        };
+        const im24Property = {};
+        _.extend(im24Property, { "latitude": this.location.latitude });
+        _.extend(im24Property, { "longitude": this.location.longitude });
+        _.extend(im24Property, { "address": this.address });
+        _.extend(im24Property, { "realEstateTypeId": this.realEstateTypeId });
+        _.extend(im24Property, { "constructionYearRangeId": this.constructionYearRangeId });
+        _.extend(im24Property, { "roomCountId": this.roomCountId });
+        _.extend(im24Property, { "livingArea": this.livingArea });
+        _.extend(im24Property, { "siteArea": this.siteArea });
         const im24Response = await im24.getValuationBasic(im24Property);
         this.valuation = new Valuation(im24Response.data);
     }
 };
 
-schema.virtual('id').get(function () {
-    return hash.md5(this.address);
-});
+schema.statics.generateId = function (property) {
+    return hash.md5(property.street + property.zip + property.city + property.country);
+};
 
 schema.virtual('address').get(function () {
     return this.street + ", " + this.zip + ", " + this.city + ", " + this.country;
@@ -179,12 +180,6 @@ schema.virtual('responseValuation').get(function () {
     response.content.messages[0].elements[0].subtitle = "Wertspanne pro qm: " + this.lowPerSqm + " - " + this.highPerSqm;
     response.content.messages[0].elements[0].image_url = this.propertyImage;
     return response;
-});
-
-schema.virtual('users', {
-    ref: 'UserProperty',
-    localField: '_id',
-    foreignField: 'propertyId'
 });
 
 module.exports = { schema };

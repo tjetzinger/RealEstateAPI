@@ -1,63 +1,43 @@
-const { InternalServerError } = require('rest-api-errors');
 const _ = require('lodash');
 
-const storeProperty = async ({ Page, PageUser, Property, User, UserProperty }, req) => {
-    let error;
-    const callbackHandler = ( err ) => {
-        if(err) error = new InternalServerError(err.code, err.message);
-    };
 
-    const page = await Page.findByIdAndUpdate(req.body.page._id, req.body.page, { new: true, upsert: true }, callbackHandler);
-    if(error) throw error;
+const storeProperty = async ({ Page, Property, User }, req, next) => {
+    const cb = (err) => { if(err) next(err); };
+    const { page, user, property } = req.body;
+    _.extend(property, { _id: Property.generateId(property)});
 
-    const user = await User.findByIdAndUpdate(req.body.user._id, req.body.user, {new: true, upsert: true }, callbackHandler);
-    if(error) throw error;
+    Page.findByIdAndUpdate(page._id, { $set: page, $addToSet: { users: user } }, { new: true, upsert: true }, cb);
+    User.findByIdAndUpdate(user._id, { $set: user, $addToSet: { pages: page, properties: property } }, {new: true, upsert: true }, cb);
+    const _property = await Property.findByIdAndUpdate(property._id, { $set: property, $addToSet: { users: user } }, { new: true, upsert: true }, cb);
+    await _property.save();
 
-    await PageUser.findOneAndUpdate({ pageId: page._id, userId: user._id }, {}, { upsert: true}, callbackHandler);
-    if(error) throw error;
-
-    let property = new Property(req.body.property);
-    property = await Property.findByIdAndUpdate(property.id, req.body.property, { upsert: true }, callbackHandler);
-    await property.save();
-    if(error) throw error;
-
-    await UserProperty.findOneAndUpdate({ userId: user._id, propertyId: property._id }, {}, { upsert: true }, callbackHandler);
-    if(error) throw error;
-
-    return property;
+    return _property;
 };
 
-const storeExpose = async ({ Page, PageExpose, Expose }, req) => {
-    let error;
-    const callbackHandler = ( err ) => {
-        if(err) error = new InternalServerError(err.code, err.message);
-    };
+const storeExpose = async ({ Page, PageExpose, Expose }, req, next) => {
+    const cb = (err) => { if(err) next(err); };
+    const { pageId, rowId, exposeId } = req.body;
 
-    if (req.body.exposeId) {
-        const page = await Page.findByIdAndUpdate(req.body.pageId, {}, { new: true, upsert:true }, callbackHandler);
-        if(error) throw error;
+    if (exposeId) {
+        Page.findByIdAndUpdate(pageId, {}, { new: true, upsert:true }, cb);
 
-        const expose = await Expose.findByIdAndUpdate(req.body.exposeId, {}, { new: true, upsert: true }, callbackHandler);
-        await expose.save();
-        if(error) throw error;
+        const _expose = await Expose.findByIdAndUpdate(exposeId, {}, { new: true, upsert: true }, cb);
+        await _expose.save();
 
         const pageExpose = {};
-        _.extend(pageExpose, { page: page._id });
-        _.extend(pageExpose, { expose: expose._id });
-        _.extend(pageExpose, { rowId: req.body.rowId });
-        _.extend(pageExpose, { topic: expose.data.realEstate["@xsi.type"] });
-
-        await PageExpose.findOneAndUpdate({ page: page._id, rowId: req.body.rowId }, pageExpose, { upsert: true }, callbackHandler);
-        if(error) throw error;
+        _.extend(pageExpose, { page: pageId });
+        _.extend(pageExpose, { expose: exposeId });
+        _.extend(pageExpose, { rowId: rowId });
+        _.extend(pageExpose, { topic: _expose.data.realEstate["@xsi.type"] });
+        await PageExpose.findOneAndUpdate({ page: pageId, rowId: rowId }, pageExpose, { upsert: true }, cb);
     }
     else {
-        await PageExpose.findOneAndDelete({ page: req.body.pageId, rowId: req.body.rowId }, (err, pageExpose) => {
+        await PageExpose.findOneAndDelete({ page: pageId, rowId: rowId }, (err, pageExpose) => {
             if(err)
-                error = new InternalServerError(err.code, err.message);
+                next(err);
             else if(pageExpose)
-                Expose.findOneAndDelete({ _id: pageExpose.expose }, (err) => { console.log(err); });
+                Expose.findOneAndDelete({ _id: pageExpose.expose }, cb);
         });
-        if(error) throw error;
     }
 };
 

@@ -4,7 +4,7 @@ const nodemon = require('gulp-nodemon');
 
 gulp.task('api', () => nodemon({
     script: './bin/www',
-    watch: ['./src']
+    watch: ['./src', './config']
 }));
 
 gulp.task('mongo', (callback) => {

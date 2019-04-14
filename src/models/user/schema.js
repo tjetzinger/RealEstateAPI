@@ -1,10 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const ObjectId = Schema.Types.ObjectId;
 
 const options = {
-    timestamps: true,
-    toJSON: { virtuals: true }
+    timestamps: true
 };
 
 const schema = new Schema({
@@ -37,19 +35,15 @@ const schema = new Schema({
     },
     phone: {
         type: String
-    }
+    },
+    pages: [{
+        type: Number,
+        ref: 'Page'
+    }],
+    properties: [{
+        type: String,
+        ref: 'Property'
+    }]
 }, options);
-
-schema.virtual('pages', {
-    ref: 'PageUser',
-    localField: '_id',
-    foreignField: 'userId'
-});
-
-schema.virtual('properties', {
-    ref: 'UserProperty',
-    localField: '_id',
-    foreignField: 'userId'
-});
 
 module.exports = { schema };

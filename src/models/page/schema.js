@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const ObjectId = Schema.Types.ObjectId;
 
 const options = {
     toJSON: { virtuals: true }
@@ -14,14 +13,12 @@ const schema = new Schema({
     name: {
         type: String,
         required: false
-    }
+    },
+    users: [{
+        type: Number,
+        ref: 'User'
+    }]
 }, options);
-
-schema.virtual('users', {
-    ref: 'PageUser',
-    localField: '_id',
-    foreignField: 'pageId'
-});
 
 schema.virtual('exposes', {
     ref: 'PageExpose',

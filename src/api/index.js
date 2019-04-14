@@ -5,10 +5,8 @@ const config = require('config');
 const { errorHandler } = require('../middleware');
 // list of models here
 const { Page } = require('../models/page');
-const { PageUser } = require('../models/page_user');
 const { Property } = require('../models/property');
 const { User } = require('../models/user');
-const { UserProperty } = require('../models/user_property');
 const { Expose } = require('../models/expose');
 const { PageExpose } = require('../models/page_expose');
 
@@ -19,7 +17,7 @@ const expose = require('../controllers/expose');
 const page = require('../controllers/page');
 
 // combine models into one object
-const models = { Page, PageUser, Property, User, UserProperty, Expose, PageExpose };
+const models = { Page, Property, User, Expose, PageExpose };
 
 const routersInit = () => {
     const router = express();
