@@ -1,22 +1,16 @@
 const _ = require('lodash');
 
-const list = ({ PageExpose, Expose }, topic) => async (req, res, next) => {
-    const { _id } = req.params;
-    let { limit, skip, search } = req.query;
-    skip = skip ? parseInt(skip, 10) : 0;
-    limit = limit ? parseInt(limit, 10) : 100;
+const list = ({ PageExpose, Expose }) => async (req, res, next) => {
+    const { pageId } = req.params;
+    const { topic } = req.query;
 
     try {
         const query = {};
-        if (search) {
-            _.extend(query, { title: new RegExp(`${search}`, 'i') })
-        }
-        const expose = await Expose.find(query)
-        .skip(skip)
-        .limit(limit)
-        .sort({ _id: -1 });
+        _.extend(query, { pageId: pageId });
+        _.extend(query, { topic: new RegExp(`${topic}`, 'i') });
+        const exposes = await PageExpose.find(query).populate('exposeId');
 
-        res.status(200).send({ expose });
+        res.status(200).send(exposes);
     } catch (error) {
         next(error);
     }
