@@ -3,9 +3,9 @@ const { APIError, InternalServerError } = require('rest-api-errors');
 const { STATUS_CODES } = require('http');
 
 const errorHandler = (err, req, res, next) => {
-    const error = (err.status === 401 || err instanceof APIError) ? err : new InternalServerError();
+    console.log(err);
 
-    console.log(error);
+    const error = (err.status === 401 || err instanceof APIError) ? err : new InternalServerError();
 
     if (err.name === 'ValidationError') {
       return res.status(405).json(err);

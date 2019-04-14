@@ -26,7 +26,7 @@ schema.virtual('users', {
 schema.virtual('exposes', {
     ref: 'PageExpose',
     localField: '_id',
-    foreignField: 'pageId'
+    foreignField: 'page'
 });
 
 module.exports = { schema };

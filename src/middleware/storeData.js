@@ -1,4 +1,5 @@
 const { InternalServerError } = require('rest-api-errors');
+const _ = require('lodash');
 
 const storeProperty = async ({ Page, PageUser, Property, User, UserProperty }, req) => {
     let error;
@@ -40,21 +41,21 @@ const storeExpose = async ({ Page, PageExpose, Expose }, req) => {
         await expose.save();
         if(error) throw error;
 
-        const pageExpose = {
-            pageId: page._id,
-            exposeId: expose._id,
-            rowId: req.body.rowId,
-            topic: expose.data.realEstate["@xsi.type"]
-        };
-        await PageExpose.findOneAndUpdate({ pageId: page._id, exposeId: expose._id }, pageExpose, { upsert: true }, callbackHandler);
+        const pageExpose = {};
+        _.extend(pageExpose, { page: page._id });
+        _.extend(pageExpose, { expose: expose._id });
+        _.extend(pageExpose, { rowId: req.body.rowId });
+        _.extend(pageExpose, { topic: expose.data.realEstate["@xsi.type"] });
+
+        await PageExpose.findOneAndUpdate({ page: page._id, rowId: req.body.rowId }, pageExpose, { upsert: true }, callbackHandler);
         if(error) throw error;
     }
     else {
-        await PageExpose.findOneAndDelete({ pageId: req.body.pageId, rowId: req.body.rowId }, (err, pageExpose) => {
+        await PageExpose.findOneAndDelete({ page: req.body.pageId, rowId: req.body.rowId }, (err, pageExpose) => {
             if(err)
                 error = new InternalServerError(err.code, err.message);
             else if(pageExpose)
-                Expose.findOneAndDelete({ _id: pageExpose.exposeId }, (err) => { console.log(err); });
+                Expose.findOneAndDelete({ _id: pageExpose.expose }, (err) => { console.log(err); });
         });
         if(error) throw error;
     }

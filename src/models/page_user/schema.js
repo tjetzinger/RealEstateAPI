@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 
 const schema = new Schema({
-    pageId: {
+    page: {
         type: Number,
         ref: 'Page',
         required: true

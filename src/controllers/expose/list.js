@@ -6,9 +6,9 @@ const list = ({ PageExpose, Expose }) => async (req, res, next) => {
 
     try {
         const query = {};
-        _.extend(query, { pageId: pageId });
-        _.extend(query, { topic: new RegExp(`${topic}`, 'i') });
-        const exposes = await PageExpose.find(query).populate('exposeId');
+        _.extend(query, { page: pageId });
+        _.extend(query, { topic: new RegExp(topic, 'i') });
+        const exposes = await PageExpose.find(query).populate('expose');
 
         res.status(200).send(exposes);
     } catch (error) {

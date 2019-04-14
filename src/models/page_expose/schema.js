@@ -7,16 +7,15 @@ const options = {
 };
 
 const schema = new Schema({
-    pageId: {
+    page: {
         type: Number,
         ref: 'Page',
         required: true
     },
-    exposeId: {
+    expose: {
         type: Number,
         ref: 'Expose',
-        required: true,
-        trim: true
+        required: true
     },
     rowId: {
         type: Number,

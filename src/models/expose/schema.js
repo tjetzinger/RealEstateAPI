@@ -24,8 +24,7 @@ const options = {
 const schema = new Schema({
     _id: {
         type: Number,
-        required: true,
-        trim: true
+        required: true
     },
     data: {
         type: Mixed,
@@ -51,7 +50,7 @@ schema.methods.fetchExpose = async function(next) {
 schema.virtual('pages', {
     ref: 'PageExpose',
     localField: '_id',
-    foreignField: 'exposeId'
+    foreignField: 'expose'
 });
 
 module.exports = { schema };
