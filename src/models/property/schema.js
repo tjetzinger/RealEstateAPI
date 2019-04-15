@@ -3,19 +3,61 @@ const mongoose = require('mongoose');
 const config = require('config');
 const _ = require('lodash');
 const Schema = mongoose.Schema;
-const locationSchema = require('../location/schema');
-const valuationSchema = require('../valuation/schema');
-const { Location } = require('../location');
-const { Valuation } = require('../valuation');
 const { im24, maps, hash } = require('../../utils');
 
-Number.prototype.toCurrency = function(){
-    return this.toLocaleString(config.locale.language, config.locale.currency).replace(',', '.');
-};
 
 const options = {
     timestamps: true
 };
+
+const schemaLocation = new Schema({
+    latitude: {
+        type: Number,
+        required: true,
+        alias: 'lat'
+    },
+    longitude: {
+        type: Number,
+        required: true,
+        alias: 'lng'
+    }
+}, { _id: false});
+
+const schemaValuation = new Schema({
+    resultAbsolute: {
+        type: Number,
+        required: true
+    },
+    lowAbsolute: {
+        type: Number,
+        required: true
+    },
+    highAbsolute: {
+        type: Number,
+        required: true
+    },
+    resultPerSqm: {
+        type: Number,
+        required: true
+    },
+    lowPerSqm: {
+        type: Number,
+        required: true
+    },
+    highPerSqm: {
+        type: Number,
+        required: true
+    },
+    quickCheckAvailable: {
+        type: Boolean
+    },
+    quickCheckLow: {
+        type: Number
+    },
+    quickCheckHigh: {
+        type: Number
+    }
+}, { _id: false});
 
 const schema = new Schema({
     _id: {
@@ -70,8 +112,12 @@ const schema = new Schema({
             return (v > 50) ? v : 50;
         }
     },
-    location: { type: locationSchema, required: true, default: {} },
-    valuation: { type: valuationSchema, required: true, default: {} },
+    location: {
+        type: schemaLocation
+    },
+    valuation: {
+        type: schemaValuation
+    },
     users: [{
         type: Number,
         ref: 'User'
@@ -94,28 +140,29 @@ schema.pre('save', async function(next) {
 });
 
 schema.methods.fetchLocation = async function() {
-    if(typeof this.location == 'undefined' || typeof this.location._id == 'undefined') {
+    if(!this.location) {
         const geoResponse = await maps.getGeoLocation(this.address);
         if (geoResponse.data.results.length !== 1)
             throw new NotAcceptable(geoResponse.data.status, this.toJSON());
         this.formatted_address = geoResponse.data.results[0].formatted_address;
-        this.location = new Location(geoResponse.data.results[0].geometry.location);
+        this.location = geoResponse.data.results[0].geometry.location;
     }
 };
 
 schema.methods.fetchValuation = async function() {
-    if(typeof this.valuation == 'undefined' || typeof this.valuation._id == 'undefined') {
-        const im24Property = {};
-        _.extend(im24Property, { "latitude": this.location.latitude });
-        _.extend(im24Property, { "longitude": this.location.longitude });
-        _.extend(im24Property, { "address": this.address });
-        _.extend(im24Property, { "realEstateTypeId": this.realEstateTypeId });
-        _.extend(im24Property, { "constructionYearRangeId": this.constructionYearRangeId });
-        _.extend(im24Property, { "roomCountId": this.roomCountId });
-        _.extend(im24Property, { "livingArea": this.livingArea });
-        _.extend(im24Property, { "siteArea": this.siteArea });
+    if(!this.valuation) {
+        const im24Property = {
+            "latitude": this.location.latitude,
+            "longitude": this.location.longitude,
+            "address": this.address,
+            "realEstateTypeId": this.realEstateTypeId,
+            "constructionYearRangeId": this.constructionYearRangeId,
+            "roomCountId": this.roomCountId,
+            "livingArea": this.livingArea,
+            "siteArea": this.siteArea
+        };
         const im24Response = await im24.getValuationBasic(im24Property);
-        this.valuation = new Valuation(im24Response.data);
+        this.valuation = im24Response.data;
     }
 };
 

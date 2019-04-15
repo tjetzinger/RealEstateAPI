@@ -1,7 +1,7 @@
-const  createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const config = require('config');
 const { MongoManager } = require('./src/mongo');
 const index = require('./src/controllers');
 const api = require('./src/api');
@@ -9,6 +9,10 @@ const api = require('./src/api');
 const app = express();
 const mongoManager = new MongoManager();
 mongoManager.connect();
+
+Number.prototype.toCurrency = function(){
+    return this.toLocaleString(config.locale.language, config.locale.currency).replace(',', '.');
+};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
