@@ -10,8 +10,7 @@ const { User } = require('../models/user');
 const { Expose } = require('../models/expose');
 
 // list of controllers here
-const location = require('../controllers/location');
-const property = require('../controllers/valuation');
+const property = require('../controllers/property');
 const expose = require('../controllers/expose');
 
 // combine models into one object
@@ -26,8 +25,7 @@ const routersInit = () => {
     }));
 
     // register api points
-    router.use('/location', location(models));
-    router.use('/valuation/basic', property(models));
+    router.use('/property', property(models));
     router.use('/expose', expose(models));
 
     // catch api all errors

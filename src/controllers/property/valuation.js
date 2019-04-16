@@ -1,6 +1,6 @@
 const { sendOne, storeProperty } = require('../../middleware');
 
-const create = (models) => async (req, res, next) => {
+const valuation = (models) => async (req, res, next) => {
     try {
         const property = await storeProperty(models, req, next);
         return sendOne(res, property.responseValuation);
@@ -9,4 +9,4 @@ const create = (models) => async (req, res, next) => {
     }
 };
 
-module.exports = { create };
+module.exports = { valuation };
