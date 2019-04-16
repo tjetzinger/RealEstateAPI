@@ -1,16 +1,16 @@
 const _ = require('lodash');
 
-const list = ({ PageExpose, Expose }) => async (req, res, next) => {
+const list = ({ Page }) => async (req, res, next) => {
     const { pageId } = req.params;
     const { topic } = req.query;
 
     try {
-        const query = {};
-        _.extend(query, { page: pageId });
-        _.extend(query, { topic: new RegExp(topic, 'i') });
-        const exposes = await PageExpose.find(query).populate('expose');
+        const _page = await Page.findOne({ _id: pageId }).populate('exposes.expose');
+        const _exposes = _.filter(_page.exposes, (expose) => {
+            return new RegExp(topic, 'i').test(expose.topic);
+        });
 
-        res.status(200).send(exposes);
+        res.status(200).send(_exposes);
     } catch (error) {
         next(error);
     }

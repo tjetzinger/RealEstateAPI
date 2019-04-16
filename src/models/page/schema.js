@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const options = {
-    toJSON: { virtuals: true }
-};
-
 const schema = new Schema({
     _id: {
         type: Number,
@@ -17,13 +13,17 @@ const schema = new Schema({
     users: [{
         type: Number,
         ref: 'User'
-    }]
-}, options);
-
-schema.virtual('exposes', {
-    ref: 'PageExpose',
-    localField: '_id',
-    foreignField: 'page'
+    }],
+    exposes: [new Schema({
+        expose: {
+            type: Number,
+            ref: 'Expose'
+        },
+        topic: {
+            type: String,
+            required: true
+        }
+    }, { _id:false })]
 });
 
 module.exports = { schema };

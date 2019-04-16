@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const _ = require('lodash');
+const { im24 } = require('../../utils');
 const Schema = mongoose.Schema;
 const Mixed = Schema.Types.Mixed;
-const { im24 } = require('../../utils');
 
 const setMongoMixedWithBadKeys = data =>
     Array.isArray(data)
@@ -26,6 +27,10 @@ const schema = new Schema({
         type: Number,
         required: true
     },
+    page: {
+        type: Number,
+        ref: 'Page'
+    },
     data: {
         type: Mixed,
         get:  getMongoMixedWithBadKeys,
@@ -35,22 +40,16 @@ const schema = new Schema({
 
 schema.pre('save', async function(next) {
     try {
-        await this.fetchExpose(next);
+        await this.fetchExpose();
         next();
     } catch (err) {
         next(err);
     }
 });
 
-schema.methods.fetchExpose = async function(next) {
+schema.methods.fetchExpose = async function() {
     const exposeResponse = await im24.getExpose(this._id);
     this.data = exposeResponse.data["expose.expose"];
 };
-
-schema.virtual('pages', {
-    ref: 'PageExpose',
-    localField: '_id',
-    foreignField: 'expose'
-});
 
 module.exports = { schema };

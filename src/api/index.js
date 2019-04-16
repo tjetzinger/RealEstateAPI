@@ -8,16 +8,14 @@ const { Page } = require('../models/page');
 const { Property } = require('../models/property');
 const { User } = require('../models/user');
 const { Expose } = require('../models/expose');
-const { PageExpose } = require('../models/page_expose');
 
 // list of controllers here
 const location = require('../controllers/location');
 const property = require('../controllers/valuation');
 const expose = require('../controllers/expose');
-const page = require('../controllers/page');
 
 // combine models into one object
-const models = { Page, Property, User, Expose, PageExpose };
+const models = { Page, Property, User, Expose };
 
 const routersInit = () => {
     const router = express();
@@ -31,7 +29,6 @@ const routersInit = () => {
     router.use('/location', location(models));
     router.use('/valuation/basic', property(models));
     router.use('/expose', expose(models));
-    router.use('/page', page(models));
 
     // catch api all errors
     router.use(errorHandler);
