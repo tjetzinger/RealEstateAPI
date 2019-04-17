@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const config = require('config');
+const helmet = require('helmet');
 const { MongoManager } = require('./src/mongo');
 const index = require('./src/controllers');
 const api = require('./src/api');
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(helmet());
 
 app.use('/', index);
 app.use('/api/v1', api());
