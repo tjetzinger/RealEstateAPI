@@ -10,6 +10,9 @@ const schema = new Schema({
         type: String,
         required: false
     },
+    companyWideCustomerId: {
+        type: String
+    },
     users: [{
         type: Number,
         ref: 'User'

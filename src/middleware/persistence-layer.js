@@ -24,7 +24,8 @@ const storeExpose = async ({ Page, Expose }, req, next) => {
     await Promise.all(_.map(_.split(exposes, ','), async (exposeId) => {
         const _expose = await Expose.findByIdAndUpdate(exposeId, { page: pageId }, { new: true, upsert: true }, cb);
         await _expose.save();
-        _page.exposes.push({ expose: _expose, topic: _.replace(_expose.data.realEstate['@xsi.type'], 'expose:', '') });
+        if(_expose.data)
+            _page.exposes.push({ expose: _expose, topic: _.replace(_expose.data.realEstate['@xsi.type'], 'expose:', '') });
     }));
     _page.save();
 };

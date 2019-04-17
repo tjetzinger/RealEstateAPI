@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const { im24 } = require('../../utils');
+const { Page } = require('../page');
 const Schema = mongoose.Schema;
 const Mixed = Schema.Types.Mixed;
 
@@ -40,16 +41,21 @@ const schema = new Schema({
 
 schema.pre('save', async function(next) {
     try {
-        await this.fetchExpose();
+        const _page = await Page.findOne({ _id: this.page }).populate('Page');
+        await this.fetchExpose(_page.companyWideCustomerId);
         next();
     } catch (err) {
-        next(err);
+        console.log('Expose: ' + this._id + ' - ' + err.message);
+        this.delete();
     }
 });
 
-schema.methods.fetchExpose = async function() {
-    const exposeResponse = await im24.getExpose(this._id);
-    this.data = exposeResponse.data["expose.expose"];
+schema.methods.fetchExpose = async function(companyWideCustomerId) {
+    const _expose = await im24.getExpose(this._id);
+    console.log('Expose: ' + this._id + ' - ' + 'Fetched...');
+    if(companyWideCustomerId && companyWideCustomerId !== _expose.data["expose.expose"]["companyWideCustomerId"])
+        throw new Error('Expose does not belong to realtor.');
+    this.data = _expose.data["expose.expose"];
 };
 
 module.exports = { schema };
