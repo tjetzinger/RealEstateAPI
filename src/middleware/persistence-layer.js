@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
 
-const storeProperty = async ({ Page, Property, User }, req, next) => {
-    const cb = (err) => { if(err) next(err); };
+const storeProperty = async ({ Page, Property, User }, req) => {
+    const cb = (err) => { if(err) return err; };
     const { page, user, property } = req.body;
     _.extend(property, { _id: Property.generateId(property)});
 
@@ -14,18 +14,21 @@ const storeProperty = async ({ Page, Property, User }, req, next) => {
     return _property;
 };
 
-const storeExpose = async ({ Page, Expose }, req, next) => {
-    const cb = (err) => { if(err) next(err); };
+const storeExpose = async ({ Page, Expose }, req) => {
+    const cb = (err) => { if(err) return err; };
     const { pageId, exposes } = req.body;
 
     const _page = await Page.findByIdAndUpdate(pageId, { $set: { exposes: [] } }, { new: true, upsert: true }, cb);
     await Expose.deleteMany({ page: pageId }).exec();
 
     await Promise.all(_.map(_.split(exposes, ','), async (exposeId) => {
-        const _expose = await Expose.findByIdAndUpdate(exposeId, { page: pageId }, { new: true, upsert: true }, cb);
-        await _expose.save();
-        if(_expose.data)
-            _page.exposes.push({ expose: _expose, topic: _.replace(_expose.data.realEstate['@xsi.type'], 'expose:', '') });
+        await Expose.findByIdAndUpdate(exposeId, { page: pageId }, { new: true, upsert: true }).then(async function(expose){
+            await expose.save();
+            if(expose.data)
+                _page.exposes.push({ expose: expose, topic: _.replace(expose.data.realEstate['@xsi.type'], 'expose:', '') });
+        }).catch(function (err) {
+            console.log(err.message);
+        });
     }));
     _page.save();
 };
