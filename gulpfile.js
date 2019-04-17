@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const gulp = require('gulp');
 const nodemon = require('gulp-nodemon');
 
-gulp.task('api', () => nodemon({
+gulp.task('api', async () => nodemon({
     script: './bin/www',
     watch: ['./src', './config']
 }));
@@ -16,4 +16,4 @@ gulp.task('mongo', (callback) => {
     });
 });
 
-gulp.task('run:dev', ['mongo', 'api']);
+gulp.task('run:dev', gulp.parallel('mongo', 'api'));

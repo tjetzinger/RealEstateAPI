@@ -1,0 +1,43 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.13.5
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-LODASH-73638:
+    - gulp > vinyl-fs > glob-watcher > gaze > globule > lodash:
+        reason: None given
+        expires: '2019-05-17T08:01:27.617Z'
+  SNYK-JS-LODASH-73639:
+    - gulp > vinyl-fs > glob-watcher > gaze > globule > lodash:
+        reason: None given
+        expires: '2019-05-17T08:01:27.617Z'
+  'npm:lodash:20180130':
+    - gulp > vinyl-fs > glob-watcher > gaze > globule > lodash:
+        reason: None given
+        expires: '2019-05-17T08:01:27.617Z'
+  'npm:clean-css:20180306':
+    - jade > clean-css:
+        reason: None given
+        expires: '2019-05-17T08:01:27.617Z'
+  'npm:constantinople:20180421':
+    - jade > constantinople:
+        reason: None given
+        expires: '2019-05-17T08:01:27.617Z'
+  'npm:mongose:20170802':
+    - mongose:
+        reason: None given
+        expires: '2019-05-17T08:01:27.617Z'
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:minimatch:20160620':
+    - gulp > vinyl-fs > glob-watcher > gaze > globule > minimatch:
+        patched: '2019-04-17T07:59:19.962Z'
+    - gulp > vinyl-fs > glob-watcher > gaze > globule > glob > minimatch:
+        patched: '2019-04-17T07:59:19.962Z'
+    - gulp > vinyl-fs > glob-stream > minimatch:
+        patched: '2019-04-17T07:59:19.962Z'
+  'npm:uglify-js:20150824':
+    - jade > transformers > uglify-js:
+        patched: '2019-04-17T07:59:19.962Z'
+  'npm:uglify-js:20151024':
+    - jade > transformers > uglify-js:
+        patched: '2019-04-17T07:59:19.962Z'
