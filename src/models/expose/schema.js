@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const config = require('config');
 const { im24 } = require('../../utils');
 const { Page } = require('../page');
 const Schema = mongoose.Schema;
@@ -57,5 +58,34 @@ schema.methods.fetchExpose = async function(companyWideCustomerId) {
         throw new Error('Expose does not belong to realtor.');
     this.data = _expose.data["expose.expose"];
 };
+
+schema.virtual('title').get(function () {
+    return this.data.realEstate.title;
+});
+
+schema.virtual('titleSub').get(function () {
+    const address = this.data.realEstate.address,
+          price = this.data.realEstate.price,
+          space = this.data.realEstate.livingSpace;
+
+    let subTitle = '';
+    subTitle += address ? address.city === address.quarter ? address.city + '\n' : address.city + ' - ' + address.quarter + '\n' : '';
+    subTitle += price ? price.value.toCurrency() + '\n' : '';
+    subTitle += space ? space + ' qm Wohnfläche' : '';
+    return subTitle;
+});
+
+schema.virtual('titleImage').get(function () {
+    return this.data.realEstate.titlePicture.urls[0].url[3]['@href'];
+});
+
+schema.virtual('titleCard').get(function () {
+    let card = _.cloneDeep(config.messages.exposeCard);
+    card.title = this.title;
+    card.subtitle = this.titleSub;
+    card.image_url = this.titleImage;
+    card.buttons[0].url += this._id;
+    return card;
+});
 
 module.exports = { schema };

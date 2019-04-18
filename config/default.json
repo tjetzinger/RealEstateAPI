@@ -115,6 +115,39 @@
                     }
                 ]
             }
+        },
+        "container": {
+            "version": "v2",
+            "content": {
+                "messages": []
+            }
+        },
+        "gallery": {
+            "type": "cards",
+            "elements": [],
+            "image_aspect_ratio": "horizontal"
+        },
+        "exposeCard":                         {
+            "title": "",
+            "subtitle": "",
+            "image_url": "",
+            "buttons": [
+                {
+                    "type": "dynamic_block_callback",
+                    "caption": "Expose einsehen 🏡",
+                    "url": "https://re-prod.mediaone.solutions/api/expose/",
+                    "method": "get",
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    }
+                },
+                {
+                    "type": "flow",
+                    "caption": "Termin vereinbaren 🗓",
+                    "target": "content20190326161342_196510"
+                }
+            ]
         }
     }
 }

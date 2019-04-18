@@ -8,8 +8,8 @@ const storeProperty = async ({ Page, Property, User }, req) => {
     const { page, user, property } = req.body;
     _.extend(property, { _id: Property.generateId(property)});
 
-    Page.findByIdAndUpdate(page._id, { $set: page, $addToSet: { users: user } }, { new: true, upsert: true }, cb);
-    User.findByIdAndUpdate(user._id, { $set: user, $addToSet: { pages: page, properties: property } }, {new: true, upsert: true }, cb);
+    Page.findByIdAndUpdate(page._id, { $set: page, $addToSet: { users: user } }, { upsert: true }, cb);
+    User.findByIdAndUpdate(user._id, { $set: user, $addToSet: { pages: page, properties: property } }, { upsert: true }, cb);
     const _property = await Property.findByIdAndUpdate(property._id, { $set: property, $addToSet: { users: user } }, { new: true, upsert: true }, cb);
     await _property.save();
 
