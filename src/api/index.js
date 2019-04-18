@@ -10,6 +10,7 @@ const { User } = require('../models/user');
 const { Expose } = require('../models/expose');
 
 // list of controllers here
+const page = require('../controllers/page');
 const property = require('../controllers/property');
 const expose = require('../controllers/expose');
 
@@ -25,6 +26,7 @@ const routersInit = () => {
     }));
 
     // register api points
+    router.use('/page', page(models));
     router.use('/property', property(models));
     router.use('/expose', expose(models));
 
