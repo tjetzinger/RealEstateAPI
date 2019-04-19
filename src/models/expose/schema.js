@@ -3,22 +3,9 @@ const _ = require('lodash');
 const config = require('config');
 const { im24 } = require('../../utils');
 const { Page } = require('../page');
+const { setMongoMixedWithBadKeys, getMongoMixedWithBadKeys } = require('../../mongo/storeMixedObjects');
 const Schema = mongoose.Schema;
 const Mixed = Schema.Types.Mixed;
-
-const setMongoMixedWithBadKeys = data =>
-    Array.isArray(data)
-        ? data.map(setMongoMixedWithBadKeys)
-        : typeof data === 'object'
-        ? Object.entries(data).reduce((a, [key,value])=>({...a, [key.replace('.','__').replace('$','___')]:setMongoMixedWithBadKeys(value)}), {})
-        : data;
-
-const getMongoMixedWithBadKeys = data =>
-    Array.isArray(data)
-        ? data.map(getMongoMixedWithBadKeys)
-        : typeof data === 'object'
-        ? Object.entries(data).reduce((a, [key, value])=> ({...a, [key.replace('__','.').replace('___','$')]:getMongoMixedWithBadKeys(value)}), {})
-        : data;
 
 const options = {
     timestamps: true,
