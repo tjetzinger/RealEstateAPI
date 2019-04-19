@@ -1,3 +1,6 @@
+const { NotFoundError } = require('rest-api-errors');
+const { logResponse } = require('../../middleware');
+
 const cb = (err) => { if(err) return err; };
 
 const get = ({ Expose }) => async (req, res, next) => {
@@ -5,9 +8,11 @@ const get = ({ Expose }) => async (req, res, next) => {
 
     try {
         const _expose = await Expose.findById(exposeId, cb);
-        if(!_expose) throw new Error('Expose: ' + exposeId + ' - Does not exist');
+        if(!_expose) throw new NotFoundError( 404, 'Expose: ' + exposeId + ' - Does not exist');
 
-        res.status(200).send(_expose.detailMessage);
+        const response = _expose.detailMessage;
+        logResponse(req.id, res, response);
+        res.status(200).send(response);
     } catch (error) {
         next(error);
     }

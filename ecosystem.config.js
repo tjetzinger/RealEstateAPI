@@ -6,10 +6,11 @@ module.exports = {
         name: isProd ? 'RealEstateAPI-Prod' : 'RealEstateAPI-Int',
         script: 'npm',
         args: '-- start',
-        instances: isProd ? 'max' : 1,
-        exec_mode : isProd ? 'cluster' : 'fork',
+        // instances: isProd ? 'max' : 1,
+        // exec_mode : isProd ? 'cluster' : 'fork',
         watch: true,
         ignore_watch : ["node_modules", "logs"],
+        instance_var: '0',
         error_file: 'logs/error.log',
         out_file: 'logs/output.log',
         env_int: {

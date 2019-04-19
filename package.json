@@ -1,6 +1,6 @@
 {
   "name": "RealEstateAPI",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
@@ -12,11 +12,15 @@
   "dependencies": {
     "axios": "0.18.0",
     "better-queue": "3.8.10",
+    "bunyan": "1.8.12",
+    "bunyan-axios-serializer": "2.0.0",
+    "bunyan-express-serializer": "1.0.0",
     "config": "3.0.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "express-basic-auth": "1.1.6",
+    "express-request-id": "1.4.1",
     "gulp": "4.0.0",
     "gulp-nodemon": "2.4.2",
     "helmet": "3.16.0",

@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const config = require('config');
+const { PreconditionFailed } = require('rest-api-errors');
 const { im24 } = require('../../utils');
+const { logError } = require('../../middleware');
 const { Page } = require('../page');
 const { setMongoMixedWithBadKeys, getMongoMixedWithBadKeys } = require('../../mongo/storeMixedObjects');
 const Schema = mongoose.Schema;
@@ -33,17 +35,18 @@ schema.pre('save', async function(next) {
         await this.fetchExpose(_page.companyWideCustomerId);
         next();
     } catch (err) {
-        console.log('Expose: ' + this._id + ' - ' + err.message);
+        logError(this.$reqId, err);
         this.delete();
     }
 });
 
 schema.methods.fetchExpose = async function(companyWideCustomerId) {
-    const _expose = await im24.getExpose(this._id);
-    console.log('Expose: ' + this._id + ' - ' + 'Fetched...');
-    if(companyWideCustomerId && companyWideCustomerId !== _expose.data["expose.expose"]["companyWideCustomerId"])
-        throw new Error('Expose does not belong to realtor.');
-    this.data = _expose.data["expose.expose"];
+    const _expose = await im24.getExpose(this._id, this.$reqId);
+    if(_expose) {
+        if(companyWideCustomerId && companyWideCustomerId !== _expose.data["expose.expose"]["companyWideCustomerId"])
+            throw new PreconditionFailed(412, 'Expose does not belong to realtor.');
+        this.data = _expose.data["expose.expose"];
+    }
 };
 
 schema.virtual('title').get(function () {

@@ -1,9 +1,11 @@
-const { sendOne, storeProperty } = require('../../middleware');
+const { sendOne, storeProperty, logResponse } = require('../../middleware');
 
 const valuation = (models) => async (req, res, next) => {
     try {
         const property = await storeProperty(models, req);
-        return sendOne(res, property.responseValuation);
+        const response = property.responseValuation;
+        logResponse(req.id, res, response);
+        return sendOne(res, response);
     } catch (error) {
         next(error);
     }

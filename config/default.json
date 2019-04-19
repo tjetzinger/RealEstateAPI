@@ -14,6 +14,29 @@
             "maximumFractionDigits": 0
         }
     },
+    "logging": {
+        "format": ":id :method :url :status :res[content-length] - :response-time ms",
+        "trace": {
+            "path": "./logs/trace.log",
+            "period": "1d",
+            "count": 30
+        },
+        "debug": {
+            "path": "./logs/debug.log",
+            "period": "1d",
+            "count": 30
+        },
+        "info": {
+            "path": "./logs/info.log",
+            "period": "1d",
+            "count": 30
+        },
+        "error": {
+            "path": "./logs/error.log",
+            "period": "1d",
+            "count": 30
+        }
+    },
     "api": {
         "basicAuth": {
             "username": "admin",

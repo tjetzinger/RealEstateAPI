@@ -141,7 +141,7 @@ schema.pre('save', async function(next) {
 
 schema.methods.fetchLocation = async function() {
     if(!this.location) {
-        const geoResponse = await maps.getGeoLocation(this.address);
+        const geoResponse = await maps.getGeoLocation(this.address, this.$reqId);
         if (geoResponse.data.results.length !== 1)
             throw new NotAcceptable(geoResponse.data.status, this.toJSON());
         this.formatted_address = geoResponse.data.results[0].formatted_address;
@@ -161,7 +161,7 @@ schema.methods.fetchValuation = async function() {
             "livingArea": this.livingArea,
             "siteArea": this.siteArea
         };
-        const im24Response = await im24.getValuationBasic(im24Property);
+        const im24Response = await im24.getValuationBasic(im24Property, this.$reqId);
         this.valuation = im24Response.data;
     }
 };
