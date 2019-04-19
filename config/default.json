@@ -122,12 +122,29 @@
                 "messages": []
             }
         },
+        "text": {
+            "type": "text",
+            "text": "",
+            "buttons": [
+                {
+                    "type": "flow",
+                    "caption": "Termin vereinbaren 🗓",
+                    "target": "content20190326161342_196510"
+                }
+            ]
+        },
         "gallery": {
             "type": "cards",
             "elements": [],
             "image_aspect_ratio": "horizontal"
         },
-        "exposeCard":                         {
+        "card":                         {
+            "title": "",
+            "subtitle": "",
+            "image_url": "",
+            "buttons": []
+        },
+        "exposeCard": {
             "title": "",
             "subtitle": "",
             "image_url": "",
@@ -135,7 +152,7 @@
                 {
                     "type": "dynamic_block_callback",
                     "caption": "Expose einsehen 🏡",
-                    "url": "https://re-prod.mediaone.solutions/api/expose/",
+                    "url": "https://domain.com/api/expose/",
                     "method": "get",
                     "headers": {
                         "Content-Type": "application/json",

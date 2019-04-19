@@ -75,4 +75,28 @@ schema.virtual('titleCard').get(function () {
     return card;
 });
 
+schema.virtual('detailMessage').get(function () {
+    let container = _.cloneDeep(config.messages.container);
+    let note = _.cloneDeep(config.messages.text);
+
+    if(_.hasIn(this.data.realEstate, 'attachments[0].attachment')) {
+        const _galleries = _.chunk(this.data.realEstate.attachments[0].attachment, 10);
+        _.forEach(_galleries, function (_gallery) {
+            let gallery = _.cloneDeep(config.messages.gallery);
+
+            _.forEach(_gallery, function (_attachment) {
+                let attachment = _.cloneDeep(config.messages.card);
+                attachment.title = _attachment.title;
+                attachment.image_url = _attachment.urls[0].url[3]['@href'];
+                gallery.elements.push(attachment);
+            });
+            container.content.messages.push(gallery);
+        });
+    }
+
+    note.text = _.truncate(this.data.realEstate.descriptionNote, { 'length': 640, 'separator': '.' });
+    container.content.messages.push(note);
+    return container;
+});
+
 module.exports = { schema };
