@@ -16,7 +16,8 @@ const getGeoLocation = ( address, reqId ) => {
         return response;
     })
     .catch(function (error) {
-        logAxiosError(reqId, error);
+        // logAxiosError(reqId, error);
+        throw error;
     });
 };
 

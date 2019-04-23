@@ -29,7 +29,8 @@ const getValuationBasic = ( property, reqId ) => {
         return response;
     })
     .catch(function (error) {
-        logAxiosError(reqId, error);
+        // logAxiosError(reqId, error);
+        throw error;
     });
 };
 
@@ -49,7 +50,8 @@ const getExpose = ( exposeId, reqId ) => {
     })
     .catch(function (error) {
         const err = error.response.status === 404 ? new NotFoundError(error.response.status, error.message) : error;
-        logAxiosError(reqId, err);
+        // logAxiosError(reqId, err);
+        throw err;
     });
 };
 
