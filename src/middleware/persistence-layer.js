@@ -20,7 +20,7 @@ const storeProperty = async ({ Page, Property, User }, req) => {
 };
 
 
-const storeExpose = async ({ Page, Expose }, req) => {
+const storeExposes = async ({ Page, Expose }, req) => {
     const { pageId, exposes } = req.body;
 
     const exposeQueue = new Queue(async function (input, next) {
@@ -48,5 +48,5 @@ const storeExpose = async ({ Page, Expose }, req) => {
 
 module.exports = {
     storeProperty,
-    storeExpose
+    storeExposes
 };

@@ -1,9 +1,9 @@
 const _ = require('lodash');
-const { storeExpose, logResponse } = require('../../middleware');
+const { storeExposes, logResponse } = require('../../middleware');
 
 const create = (models) => async (req, res, next) => {
     try {
-        await storeExpose(models, req);
+        await storeExposes(models, req);
 
         logResponse(req.id, res, '');
         res.status(200).end();
