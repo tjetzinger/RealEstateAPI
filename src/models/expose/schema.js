@@ -90,8 +90,10 @@ schema.virtual('detailMessage').get(function () {
             _.forEach(_gallery, function (_attachment) {
                 let attachment = _.cloneDeep(config.messages.card);
                 attachment.title = _attachment.title;
-                attachment.image_url = _attachment.urls[0].url[3]['@href'];
-                gallery.elements.push(attachment);
+                if(_.hasIn(_attachment, 'urls')) {
+                    attachment.image_url = _attachment.urls[0].url[3]['@href'];
+                    gallery.elements.push(attachment);
+                }
             });
             container.content.messages.push(gallery);
         });

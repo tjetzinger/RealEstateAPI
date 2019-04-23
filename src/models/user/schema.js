@@ -43,6 +43,10 @@ const schema = new Schema({
     properties: [{
         type: String,
         ref: 'Property'
+    }],
+    broadcastedExposes: [{
+        type: Number,
+        ref: 'Expose'
     }]
 }, options);
 
