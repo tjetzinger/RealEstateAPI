@@ -27,7 +27,7 @@
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
     "lodash": "4.17.11",
-    "mongoose": "5.4.20",
+    "mongoose": "5.7.5",
     "morgan": "1.9.1",
     "oauth-1.0a": "2.2.5",
     "rest-api-errors": "^1.2.1",
