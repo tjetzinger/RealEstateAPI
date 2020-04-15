@@ -22,7 +22,7 @@
     "express-basic-auth": "1.1.6",
     "express-request-id": "1.4.1",
     "gulp": "4.0.0",
-    "gulp-nodemon": "2.4.2",
+    "gulp-nodemon": "2.5.0",
     "helmet": "3.16.0",
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
