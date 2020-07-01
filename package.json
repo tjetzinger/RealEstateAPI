@@ -12,7 +12,7 @@
   "dependencies": {
     "axios": "0.18.0",
     "better-queue": "3.8.10",
-    "bunyan": "1.8.12",
+    "bunyan": "1.8.13",
     "bunyan-axios-serializer": "2.0.0",
     "bunyan-express-serializer": "1.0.0",
     "config": "3.0.1",
