@@ -10,7 +10,7 @@
     "prepare": "npm run snyk-protect"
   },
   "dependencies": {
-    "axios": "0.18.0",
+    "axios": "0.21.1",
     "better-queue": "3.8.10",
     "bunyan": "1.8.12",
     "bunyan-axios-serializer": "2.0.0",
