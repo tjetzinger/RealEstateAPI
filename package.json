@@ -27,11 +27,11 @@
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
     "lodash": "4.17.11",
-    "mongoose": "5.4.20",
+    "mongoose": "5.12.3",
     "morgan": "1.9.1",
     "oauth-1.0a": "2.2.5",
     "rest-api-errors": "^1.2.1",
-    "snyk": "^1.151.0"
+    "snyk": "^1.230.7"
   },
   "snyk": true
 }
